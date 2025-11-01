@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #101820;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        #chatbox {
+            width: 400px;
+            height: 500px;
+            background: #1e1e2e;
+            border-radius: 10px;
+            padding: 15px;
+            overflow-y: auto;
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        .message {
+            margin: 10px 0;
+        }
+        .user { text-align: right; color: #7FDBFF; }
+        .bot { text-align: left; color: #FFD700; }
+        #input-area {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            width: 300px;
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            padding: 8px 15px;
+            border: none;
+            background-color: #00BFA6;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background-color: #009E8E; }
+    </style>
+</head>
+<body>
+    <h2>AI Assistant</h2>
+    <div id="chatbox"></div>
+    <div id="input-area">
+        <input type="text" id="message" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+        <div style="margin-bottom:10px;">
+            <label style="margin-right:10px;">Mode:</label>
+            <select id="mode">
+                <option value="voice">Voice</option>
+                <option value="text">Text Only</option>
+            </select>
+            <button onclick="stopTask()" style="margin-left:20px;background:red;">Stop Task</button>
+        </div>
+        
+    </div>
+
+    <script>
+        async function sendMessage() {
+    const userMessage = document.getElementById("message").value.trim();
+    if (userMessage === "") return;
+
+    const mode = document.getElementById("mode").value;
+    const chatbox = document.getElementById("chatbox");
+
+    const userDiv = document.createElement("div");
+    userDiv.classList.add("message", "user");
+    userDiv.textContent = "You: " + userMessage;
+    chatbox.appendChild(userDiv);
+
+    document.getElementById("message").value = "";
+
+    const response = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMessage, mode: mode })
+    });
+
+    const data = await response.json();
+
+    const botDiv = document.createElement("div");
+    botDiv.classList.add("message", "bot");
+    botDiv.textContent = "Bot: " + data.reply;
+    chatbox.appendChild(botDiv);
+
+    chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+async function stopTask() {
+    const response = await fetch("/stop", { method: "POST" });
+    const data = await response.json();
+
+    const chatbox = document.getElementById("chatbox");
+    const botDiv = document.createElement("div");
+    botDiv.classList.add("message", "bot");
+    botDiv.textContent = "Bot: " + data.reply;
+    chatbox.appendChild(botDiv);
+}
+
+    </script>
+</body>
+</html>
