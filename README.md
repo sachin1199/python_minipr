@@ -26,6 +26,7 @@
 ---
 
 ##  Project Structure
+```
 python_project/
 │
 ├── main.py # Flask app entry point
@@ -36,7 +37,7 @@ python_project/
 ├── templates/
 │ └── index.html # Web interface
 └── pycache/ # Cached Python files (auto-generated)
-
+```
 
 ---
 
@@ -48,10 +49,14 @@ https://github.com/sachin1199/python_minipr.git
 cd python_project
 ```
 2️⃣ Install dependencies
+```
 pip install -r requirements.txt
+```
 
 3️⃣ Run the project
+```
 python main.py
+```
 
 Example Commands
 | Command                   | Description              |
